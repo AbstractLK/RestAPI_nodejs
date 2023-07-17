@@ -1,16 +1,19 @@
 const userModel = require('../models/User');
+const bcrypt = require('bcryptjs');
 
 async function insert(data) {
+    const encryptedPassword = await bcrypt.hash(data.pass, 10);
     const user = {
         name: data.name,
-        password: data.pass,
+        password: encryptedPassword,
         reg_date: new Date(),
         age: data.age,
         address: data.address,
         contact: data.contact
     };
 
-    return (await userModel.create(user));
+    const savedUser = await userModel.create(user);
+    return (savedUser);
 }
 
 async function update(userId, updatedUser) {
@@ -23,6 +26,10 @@ async function searchByName(name) {
 
 async function searchById(id) {
     return (await userModel.findById(id));
+}
+
+async function searchByContact(contact) {
+    return (await userModel.find({contact: contact}));
 }
 
 async function countAllUsers() {
@@ -44,8 +51,9 @@ let userDB = {
     deleteUser,
     searchById,
     searchByName,
+    searchByContact,
     countAllUsers,
-    isExist
+    isExist,
 }
 
 Object.freeze(userDB);
