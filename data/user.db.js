@@ -5,11 +5,13 @@ async function insert(data) {
     const encryptedPassword = await bcrypt.hash(data.pass, 10);
     const user = {
         name: data.name,
+        email: data.email,
         password: encryptedPassword,
         reg_date: new Date(),
         age: data.age,
         address: data.address,
-        contact: data.contact
+        contact: data.contact,
+        role: data.role
     };
 
     const savedUser = await userModel.create(user);
@@ -28,8 +30,8 @@ async function searchById(id) {
     return (await userModel.findById(id));
 }
 
-async function searchByContact(contact) {
-    return (await userModel.find({contact: contact}));
+function searchByEmail(email) {
+    return userModel.findOne({email: email});
 }
 
 async function countAllUsers() {
@@ -41,7 +43,7 @@ async function deleteUser(userId) {
 }
 
 async function isExist(value) {
-    const res = await userModel.exists({contact: value});
+    const res = await userModel.exists({email: value});
      return (res !== null);
 }
 
@@ -51,7 +53,7 @@ let userDB = {
     deleteUser,
     searchById,
     searchByName,
-    searchByContact,
+    searchByEmail,
     countAllUsers,
     isExist,
 }
