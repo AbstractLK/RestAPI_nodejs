@@ -5,6 +5,7 @@ require('./config/database').connect();
 
 const authRoute = require('./router/auth');
 const userRoute = require('./router/users');
+const taskRoute = require('./router/tasks');
 
 const app = express();
 app.use(cors());
@@ -17,6 +18,7 @@ app.use(cors({
 //router
 app.use('/auth', authRoute);
 app.use('/user', userRoute);
+app.use('/task', taskRoute);
 
 app.listen(process.env.APP_PORT,()=>{
     console.log(process.env.APP_NAME + ' started at port 3001');
