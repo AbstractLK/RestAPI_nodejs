@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controller/user')
+const authMW = require("../middlewares/authMW");
+const roles = require('../util/enum/userRoles');
+const checkRoles = require('../middlewares/checkRoles');
 
 //post method
 router.post('/registration',userController.registration);
@@ -9,14 +12,11 @@ router.post('/registration',userController.registration);
 router.put('/update-user/:id',userController.update);
 
 //delete method
-router.delete('/delete-user/:id',userController.userDelete);
+router.delete('/delete-user/:id',authMW ,userController.userDelete);
 
-router.get('/getAll', userController.getAll);
+router.get('/getAll',[authMW, checkRoles([roles.student, roles.teacher])], userController.getAll);
 
 //get method
-router.get('/', (req,res)=>{
-    res.send('user login !');
-    console.log('login page');
-});
+router.post('/',userController.login);
 
 module.exports = router;
